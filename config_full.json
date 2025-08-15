@@ -19,17 +19,9 @@
       "tls": { "enabled": true, "server_name": "sg.foo.bar" }
     },
     {
-      "tag": "trojan-jp",
-      "type": "trojan",
-      "server": "jp.foo.bar",
-      "server_port": 443,
-      "password": "LoveTourCoder",
-      "tls": { "enabled": true, "server_name": "jp.foo.bar" }
-    },
-    {
-      "tag": "vmess-out",
+      "tag": "vmess-jp",
       "type": "vmess",
-      "server": "jpv.foo.bar",
+      "server": "jp.foo.bar",
       "server_port": 443,
       "uuid": "UUID",
       "security": "auto",
@@ -39,7 +31,7 @@
     {
       "tag": "proxy",
       "type": "selector",
-      "outbounds": ["trojan-sg", "trojan-jp", "vmess-out"],
+      "outbounds": ["trojan-sg", "vmess-jp"],
       "default": "trojan-sg"
     }
   ],
