@@ -1,0 +1,10 @@
+#!/bin/bash
+
+# 停止 sing-box
+if [ -f /tmp/sing-box.pid ]; then
+    kill "$(cat /tmp/sing-box.pid)"
+    rm /tmp/sing-box.pid
+fi
+
+# 关闭 GNOME 系统代理
+gsettings set org.gnome.system.proxy mode 'none'
