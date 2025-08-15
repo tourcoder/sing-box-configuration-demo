@@ -1,0 +1,50 @@
+{
+  "log": {
+    "level": "info"
+  },
+  "inbounds": [
+    {
+      "type": "socks",
+      "listen": "127.0.0.1",
+      "listen_port": 1080
+    }
+  ],
+  "outbounds": [
+    {
+      "tag": "trojan-sg",
+      "type": "trojan",
+      "server": "sg.foo.bar",
+      "server_port": 443,
+      "password": "LoveTourCoder",
+      "tls": { "enabled": true, "server_name": "sg.foo.bar" }
+    },
+    {
+      "tag": "trojan-jp",
+      "type": "trojan",
+      "server": "jp.foo.bar",
+      "server_port": 443,
+      "password": "LoveTourCoder",
+      "tls": { "enabled": true, "server_name": "jp.foo.bar" }
+    },
+    {
+      "tag": "vmess-out",
+      "type": "vmess",
+      "server": "jpv.foo.bar",
+      "server_port": 443,
+      "uuid": "UUID",
+      "security": "auto",
+      "tls": { "enabled": true, "server_name": "jp.foo.bar" },
+      "transport": { "type": "ws", "path": "/fml" }
+    },
+    {
+      "tag": "proxy",
+      "type": "selector",
+      "outbounds": ["trojan-sg", "trojan-jp", "vmess-out"],
+      "default": "trojan-sg"
+    }
+  ],
+  "route": {
+    "rules": [],
+    "final": "proxy"
+  }
+}
