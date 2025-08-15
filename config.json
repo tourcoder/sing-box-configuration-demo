@@ -1,0 +1,95 @@
+{
+  "log": {
+    "level": "info",
+    "timestamp": true
+  },
+  "dns": {
+    "servers": [
+      {
+        "tag": "local-dns",
+        "address": "8.8.8.8",
+        "detour": "DIRECT"
+      },
+      {
+        "tag": "dns-direct",
+        "address": "8.8.8.8",
+        "detour": "sg"
+      }
+    ],
+    "final": "local-dns",
+    "strategy": "ipv4_only"
+  },
+  "inbounds": [
+    {
+      "type": "socks",
+      "listen": "127.0.0.1",
+      "listen_port": 1080
+    }
+  ],
+  "outbounds": [
+    {
+      "tag": "sg",
+      "type": "trojan",
+      "server": "sg.foo.bar",
+      "server_port": 443,
+      "password": "LoveTourCoder",
+      "tls": { "enabled": true }
+    },
+    {
+      "tag": "jp",
+      "type": "vmess",
+      "server": "jp.foo.bar",
+      "server_port": 443,
+      "uuid": "UUID",
+      "security": "auto",
+      "tls": { "enabled": true },
+      "transport": { "type": "ws", "path": "/fml" }
+    },
+    {
+      "tag": "autoNode",
+      "type": "urltest",
+      "outbounds": ["sg", "jp"],
+      "url": "https://www.gstatic.com/generate_204",
+      "interval": "10m"
+    },
+    {
+      "tag": "manualNode",
+      "type": "selector",
+      "outbounds": ["sg", "jp", "autoNode", "DIRECT"],
+      "default": "autoNode"
+    },
+    { "tag": "DIRECT", "type": "direct" },
+    { "tag": "BLOCK", "type": "block" }
+  ],
+  "route": {
+    "rule_set": [
+      {
+        "tag": "direct-rules",
+        "type": "local",
+        "format": "source",
+        "path": "./cn.json"
+      },
+      {
+        "tag": "cn-rules",
+        "type": "local",
+        "format": "source",
+        "path": "./cnip.json"
+      }
+    ],
+    "rules": [
+      {
+        "domain": ["sg.foo.bar", "jp.foo.bar"],
+        "outbound": "DIRECT"
+      },
+      {
+        "ip_cidr": ["127.0.0.0/8", "192.168.0.0/16", "10.0.0.0/8", "172.16.0.0/12", "fc00::/7"],
+        "outbound": "DIRECT"
+      },
+      {
+        "rule_set": ["direct-rules", "cn-rules"],
+        "outbound": "DIRECT"
+      }
+    ],
+    "final": "manualNode"
+  }
+}
